@@ -1,4 +1,5 @@
 import Timer from "@/domain/Timer";
+import { changeSecondToMicro } from "@/utils/timeUtils";
 
 describe("Timer", () => {
     let mockWorker;
@@ -16,12 +17,13 @@ describe("Timer", () => {
 
     test("start() sends start command", () => {
         const timer = new Timer("/worker/timerWorker.js");
-        timer.setup(10);
+        const durationSec = 10;
+        timer.setup(durationSec);
         timer.start();
 
         expect(mockWorker.postMessage).toHaveBeenCalledWith({
             command: "start",
-            payload: { durationSec: 10 },
+            payload: { durationMs: changeSecondToMicro(durationSec) },
         });
     });
 

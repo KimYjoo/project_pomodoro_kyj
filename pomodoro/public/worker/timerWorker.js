@@ -37,10 +37,13 @@ self.onmessage = (event) => {
     const { command, payload } = event.data;
     if (command === "start") {
         if (running) return;
-        durationMs = changeSecondToMicro(payload.durationSec);
+        durationMs = payload.durationMs || durationMs;
         startMs = performance.now();
         running = true;
         post("started");
         timerLoop();
+    } else if (command === "pause") {
+        if (!running) return;
+        running = false;
     }
 };

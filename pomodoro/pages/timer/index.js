@@ -27,11 +27,15 @@ export default function TimerPage() {
     const onClickStart = () => {
         timerRef.current?.start();
     };
+    const onClickPause = () => {
+        timerRef.current?.pause();
+    };
 
     return (
         <>
             <div>{timeFormatMMSS(remainingSec)}</div>
             <button onClick={onClickStart}>시작</button>
+            <button onClick={onClickPause}>정지</button>
         </>
     );
 }
