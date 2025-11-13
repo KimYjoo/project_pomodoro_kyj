@@ -36,6 +36,7 @@ function timerLoop() {
 self.onmessage = (event) => {
     const { command, payload } = event.data;
     if (command === "start") {
+        if (running) return;
         durationMs = changeSecondToMicro(payload.durationSec);
         startMs = performance.now();
         running = true;

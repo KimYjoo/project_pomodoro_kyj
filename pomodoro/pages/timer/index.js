@@ -26,7 +26,6 @@ export default function TimerPage() {
 
     const onClickStart = () => {
         timerRef.current?.start();
-        console.log(timerRef.current.worker);
     };
 
     return (
