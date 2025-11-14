@@ -1,49 +1,39 @@
-import { changeSecondToMicro } from "/utils/timeUtils.js";
-const tickMs = 1000;
+import { createInitialState, handleOnMessage, computeTick } from "/utils/timeUtils.js";
 
-let running = false;
-
-// 타이머 설정 시간
-let durationMs = 0;
-// 시작 시간
-let startMs = 0;
-// 남은 시간
-let remainingMs = 0;
-
-function post(command, payload) {
-    self.postMessage({ command, ...payload });
-}
+let state = createInitialState();
 
 // 타이머 진행 루프
 function timerLoop() {
-    if (!running) return;
+    if (!state.running) return;
 
-    const nowMs = performance.now();
-    const elapsedMs = nowMs - startMs;
-    remainingMs = durationMs - elapsedMs;
+    const { elapsedMs, remainingMs } = computeTick(state);
 
     if (remainingMs <= 0) {
-        running = false;
+        state = handleOnMessage(state, { command: "done" });
+        post("tick", { remainingMs: 0 });
         post("done");
         return;
     }
     post("tick", { remainingMs });
     // 드리프트 보정
-    const correctionTick = tickMs - (elapsedMs % tickMs);
-    setTimeout(timerLoop, correctionTick);
+    const nextTick = state.tickMs - (elapsedMs % state.tickMs);
+    setTimeout(timerLoop, nextTick);
+}
+
+function post(command, payload = {}) {
+    self.postMessage({ command, ...payload });
 }
 
 self.onmessage = (event) => {
-    const { command, payload } = event.data;
-    if (command === "start") {
-        if (running) return;
-        durationMs = payload.durationMs || durationMs;
-        startMs = performance.now();
-        running = true;
-        post("started");
-        timerLoop();
-    } else if (command === "pause") {
-        if (!running) return;
-        running = false;
-    }
+    const { command, payload } = event.data || {};
+    if (!command) return;
+
+    const prevState = state;
+    state = handleOnMessage(state, { command, payload });
+
+    const becameRunning = !prevState.running && state.running;
+    if (!becameRunning) return;
+
+    post("started");
+    timerLoop();
 };

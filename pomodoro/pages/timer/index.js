@@ -22,7 +22,7 @@ export default function TimerPage() {
             offTick();
             timer.dispose();
         };
-    }, [timerWorkerUrl]);
+    }, [timerWorkerUrl, durationSec]);
 
     const onClickStart = () => {
         timerRef.current?.start();

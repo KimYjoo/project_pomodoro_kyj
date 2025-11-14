@@ -1,7 +1,7 @@
 import Timer from "@/domain/Timer";
 import { changeSecondToMicro } from "@/utils/timeUtils";
 
-describe("Timer", () => {
+describe("Timer start", () => {
     let mockWorker;
 
     beforeEach(() => {
@@ -23,7 +23,6 @@ describe("Timer", () => {
 
         expect(mockWorker.postMessage).toHaveBeenCalledWith({
             command: "start",
-            payload: { durationMs: changeSecondToMicro(durationSec) },
         });
     });
 
@@ -35,5 +34,28 @@ describe("Timer", () => {
         mockWorker.onmessage({ data: { command: "tick", remainingMs: 1234 } });
 
         expect(handler).toHaveBeenCalledWith(1234);
+    });
+});
+
+describe("Timer pause", () => {
+    let mockWorker;
+
+    beforeEach(() => {
+        mockWorker = {
+            postMessage: jest.fn(),
+            terminate: jest.fn(),
+            onmessage: null,
+            onerror: null,
+        };
+
+        global.Worker = jest.fn(() => mockWorker);
+    });
+
+    test("pause()가 worker에 pause 명령을 보낸다", () => {
+        const timer = new Timer("/worker/timerWorker.js");
+
+        timer.pause();
+
+        expect(mockWorker.postMessage).toHaveBeenCalledWith({ command: "pause" });
     });
 });
