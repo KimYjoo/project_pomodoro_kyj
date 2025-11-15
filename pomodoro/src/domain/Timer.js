@@ -32,6 +32,7 @@ export default class Timer {
         this.#timerWorker.postMessage({
             command: "setup",
             payload: {
+                originalDurationMs: this.#durationMs,
                 durationMs: this.#durationMs,
                 tickMs,
             },
@@ -45,6 +46,15 @@ export default class Timer {
     pause() {
         this.#timerWorker.postMessage({
             command: "pause",
+        });
+    }
+    reset() {
+        this.#remainingMs = this.#durationMs;
+        this.#timerWorker.postMessage({
+            command: "reset",
+            payload: {
+                durationMs: this.#durationMs,
+            },
         });
     }
     onTick(handler) {

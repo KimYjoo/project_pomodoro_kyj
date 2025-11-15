@@ -1,6 +1,13 @@
-import { createInitialState, handleOnMessage, computeTick } from "/utils/timeUtils.js";
+import { createInitialState, computeTick, becameRunning } from "/utils/timeUtils.js";
+import handleOnMessage from "/utils/handleOnMessage.js";
+import handleSideEffects from "/utils/handleSideEffects.js";
 
 let state = createInitialState();
+
+function post(command, payload = {}) {
+    if (!command) return;
+    self.postMessage({ command, ...payload });
+}
 
 // 타이머 진행 루프
 function timerLoop() {
@@ -9,9 +16,9 @@ function timerLoop() {
     const { elapsedMs, remainingMs } = computeTick(state);
 
     if (remainingMs <= 0) {
+        prevState = state;
         state = handleOnMessage(state, { command: "done" });
-        post("tick", { remainingMs: 0 });
-        post("done");
+        handleSideEffects("done", state, post);
         return;
     }
     post("tick", { remainingMs });
@@ -20,20 +27,14 @@ function timerLoop() {
     setTimeout(timerLoop, nextTick);
 }
 
-function post(command, payload = {}) {
-    self.postMessage({ command, ...payload });
-}
-
 self.onmessage = (event) => {
     const { command, payload } = event.data || {};
     if (!command) return;
 
     const prevState = state;
     state = handleOnMessage(state, { command, payload });
+    handleSideEffects(command, state, post);
 
-    const becameRunning = !prevState.running && state.running;
-    if (!becameRunning) return;
-
-    post("started");
+    if (!becameRunning(prevState, state)) return;
     timerLoop();
 };
