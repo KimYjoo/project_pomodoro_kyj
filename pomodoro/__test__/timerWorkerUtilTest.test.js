@@ -1,11 +1,12 @@
-import { createInitialState, handleOnMessage } from "../public/utils/timeUtils.js";
+import { createInitialState } from "../public/utils/timeUtils.js";
+import handleOnMessage from "../public/utils/handleOnMessage.js";
 
 // 단순 payload 없을 때 빈 객체로 대체
 function call(state, { command, payload = {} } = {}, now) {
     return handleOnMessage(state, { command, payload }, now);
 }
 
-describe("timerCore pause logic", () => {
+describe("timer pause logic", () => {
     test("pause는 running이 true일 때 running을 false로 만든다", () => {
         let state = createInitialState();
         state = { ...state, running: true, startMs: 0, durationMs: 5000 };
@@ -46,5 +47,25 @@ describe("timerCore pause logic", () => {
 
         expect(state.running).toBe(false);
         expect(state.durationMs).toBe(4000); // 남은 시간
+    });
+});
+
+describe("timer reset logic", () => {
+    test("reset은 running이 true일 때 running을 false로 만든다", () => {
+        let state = createInitialState();
+        state = { ...state, running: true, startMs: 0, durationMs: 5000, originalDurationMs: 5000 };
+
+        const next = call(state, { command: "reset" }, () => 3000);
+
+        expect(next.running).toBe(false);
+    });
+    test("reset은 remainingMs를 초기 durationMs로 초기화 한다.", () => {
+        let state = createInitialState();
+        state = { ...state, running: true, startMs: 0, durationMs: 5000, originalDurationMs: 5000 };
+        state = call(state, { command: "pause" }, () => 2000);
+        expect(state.durationMs).toBe(3000);
+        state = call(state, { command: "reset" }, () => 1000);
+
+        expect(state.durationMs).toBe(5000);
     });
 });

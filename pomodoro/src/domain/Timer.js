@@ -1,7 +1,6 @@
 import { changeSecondToMicro } from "@/utils/timeUtils";
 
 export default class Timer {
-    #remainingMs = 0;
     #durationMs = 0;
     #timerWorker = null;
     #onTick = null;
@@ -11,10 +10,8 @@ export default class Timer {
         this.#timerWorker.onmessage = (event) => {
             const { command, remainingMs } = event.data || {};
             if (command === "tick") {
-                this.#remainingMs = remainingMs;
                 this.#onTick?.(remainingMs);
             } else if (command === "paused") {
-                this.#remainingMs = remainingMs;
                 this.#onTick?.(remainingMs);
             }
         };
@@ -28,7 +25,6 @@ export default class Timer {
     }
     setup(durationSec = 0, tickMs = 1000) {
         this.#durationMs = changeSecondToMicro(durationSec);
-        this.#remainingMs = this.#durationMs;
         this.#timerWorker.postMessage({
             command: "setup",
             payload: {
@@ -49,7 +45,6 @@ export default class Timer {
         });
     }
     reset() {
-        this.#remainingMs = this.#durationMs;
         this.#timerWorker.postMessage({
             command: "reset",
             payload: {
