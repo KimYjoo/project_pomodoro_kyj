@@ -4,6 +4,7 @@ export default class Timer {
     #durationMs = 0;
     #timerWorker = null;
     #onTick = null;
+    #onDone = null;
 
     constructor(workerUrl) {
         this.#timerWorker = new Worker(workerUrl, { type: "module" });
@@ -11,8 +12,8 @@ export default class Timer {
             const { command, remainingMs } = event.data || {};
             if (command === "tick") {
                 this.#onTick?.(remainingMs);
-            } else if (command === "paused") {
-                this.#onTick?.(remainingMs);
+            } else if (command === "done") {
+                this.#onDone?.();
             }
         };
         this.#timerWorker.onerror = (e) => {
@@ -56,6 +57,12 @@ export default class Timer {
         this.#onTick = handler;
         return () => {
             this.#onTick = null;
+        };
+    }
+    onDone(handler) {
+        this.#onDone = handler;
+        return () => {
+            this.#onDone = null;
         };
     }
     dispose() {

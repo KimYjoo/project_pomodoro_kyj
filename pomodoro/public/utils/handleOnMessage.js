@@ -1,14 +1,15 @@
-export default function handleOnMessage(state, { command, payload }, now = () => performance.now()) {
-    switch (command) {
+export default function handleOnMessage({ state, onMessage, post }, now = () => performance.now()) {
+    switch (onMessage?.command) {
         case "setup":
             return {
                 ...state,
-                originalDurationMs: payload.durationMs,
-                durationMs: payload.durationMs,
-                tickMs: payload.tickMs,
+                originalDurationMs: onMessage?.payload?.durationMs,
+                durationMs: onMessage?.payload?.durationMs,
+                tickMs: onMessage?.payload?.tickMs,
                 running: false,
             };
         case "reset":
+            post("tick", { remainingMs: state.originalDurationMs });
             return {
                 ...state,
                 durationMs: state.originalDurationMs,

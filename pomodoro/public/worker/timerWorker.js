@@ -32,7 +32,7 @@ self.onmessage = (event) => {
     if (!command) return;
 
     const prevState = state;
-    state = handleOnMessage(state, { command, payload });
+    state = handleOnMessage({ state, onMessage: { command, payload }, post });
     handleSideEffects(command, state, post);
 
     if (!becameRunning(prevState, state)) return;

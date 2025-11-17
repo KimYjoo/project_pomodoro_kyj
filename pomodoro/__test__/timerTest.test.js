@@ -1,5 +1,4 @@
 import Timer from "@/domain/Timer";
-import { changeSecondToMicro } from "@/utils/timeUtils";
 
 describe("Timer start", () => {
     let mockWorker;

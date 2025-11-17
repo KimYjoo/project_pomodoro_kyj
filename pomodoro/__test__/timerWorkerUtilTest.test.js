@@ -3,7 +3,7 @@ import handleOnMessage from "../public/utils/handleOnMessage.js";
 
 // 단순 payload 없을 때 빈 객체로 대체
 function call(state, { command, payload = {} } = {}, now) {
-    return handleOnMessage(state, { command, payload }, now);
+    return handleOnMessage({ state, onMessage: { command, payload }, post: () => {} }, now);
 }
 
 describe("timer pause logic", () => {
