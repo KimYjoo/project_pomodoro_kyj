@@ -22,6 +22,7 @@ describe("Timer start", () => {
 
         expect(mockWorker.postMessage).toHaveBeenCalledWith({
             command: "start",
+            payload: {},
         });
     });
 
@@ -30,7 +31,7 @@ describe("Timer start", () => {
         const handler = jest.fn();
         timer.onTick(handler);
 
-        mockWorker.onmessage({ data: { command: "tick", remainingMs: 1234 } });
+        mockWorker.onmessage({ data: { command: "update", remainingMs: 1234 } });
 
         expect(handler).toHaveBeenCalledWith(1234);
     });
@@ -55,6 +56,6 @@ describe("Timer pause", () => {
 
         timer.pause();
 
-        expect(mockWorker.postMessage).toHaveBeenCalledWith({ command: "pause" });
+        expect(mockWorker.postMessage).toHaveBeenCalledWith({ command: "pause", payload: {} });
     });
 });

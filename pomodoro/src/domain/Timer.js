@@ -8,45 +8,61 @@ export default class Timer {
 
     constructor(workerUrl) {
         this.#timerWorker = new Worker(workerUrl, { type: "module" });
-        this.#timerWorker.onmessage = (event) => {
-            const { command, remainingMs } = event.data || {};
-            if (command === "tick") {
-                this.#onTick?.(remainingMs);
-            } else if (command === "done") {
-                this.#onDone?.();
-            }
-        };
-        this.#timerWorker.onerror = (e) => {
-            console.error("worker error", e);
-        };
+        this.#timerWorker.onmessage = this.#on.bind(this);
+        this.#timerWorker.onerror = this.#onError.bind(this);
     }
 
     get worker() {
         return this.#timerWorker;
     }
+
+    #on(event) {
+        const { command = "", remainingMs = 0 } = event.data || {};
+
+        switch (command) {
+            case "update":
+                this.#onTick?.(remainingMs);
+                return;
+            case "done":
+                this.#onDone?.();
+            default:
+                return;
+        }
+    }
+
+    #onError(error) {
+        console.error("worker error", error);
+    }
+
+    #post({ command, payload = {} }) {
+        this.#timerWorker.postMessage({
+            command,
+            payload,
+        });
+    }
+
     setup(durationSec = 0, tickMs = 1000) {
         this.#durationMs = changeSecondToMicro(durationSec);
-        this.#timerWorker.postMessage({
+        this.#post({
             command: "setup",
             payload: {
-                originalDurationMs: this.#durationMs,
                 durationMs: this.#durationMs,
                 tickMs,
             },
         });
     }
     start() {
-        this.#timerWorker.postMessage({
+        this.#post({
             command: "start",
         });
     }
     pause() {
-        this.#timerWorker.postMessage({
+        this.#post({
             command: "pause",
         });
     }
     reset() {
-        this.#timerWorker.postMessage({
+        this.#post({
             command: "reset",
             payload: {
                 durationMs: this.#durationMs,
