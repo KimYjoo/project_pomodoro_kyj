@@ -30,8 +30,16 @@ export default class Timer {
         }
     }
 
-    #onError(error) {
-        console.error("worker error", error);
+    #onError(event) {
+        // event.preventDefault(); // 에러가 콘솔에 빨갛게 뜨는 것을 막지 않으려면 주석 처리
+
+        console.group("🚨 Worker Loading Error");
+        console.log("Message:", event.message); // 에러 메시지 텍스트
+        console.log("Filename:", event.filename); // 에러가 발생한 파일명
+        console.log("Line No:", event.lineno); // 에러 라인
+        console.log("Col No:", event.colno);
+        console.log("Error Object:", event.error); // 실행 전 에러라면 여기가 null/undefined일 수 있음
+        console.groupEnd();
     }
 
     #post({ command, payload = {} }) {

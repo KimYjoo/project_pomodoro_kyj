@@ -3,6 +3,7 @@ export default function handleOnMessage(state, { command, payload }, now = () =>
         case "setup":
             return {
                 ...state,
+                durationMs: payload?.durationMs,
                 remainingMs: payload?.durationMs,
                 tickMs: payload?.tickMs,
                 running: false,
@@ -10,6 +11,7 @@ export default function handleOnMessage(state, { command, payload }, now = () =>
         case "reset":
             return {
                 ...state,
+                durationMs: payload?.durationMs,
                 remainingMs: payload?.durationMs,
                 running: false,
             };
@@ -22,11 +24,10 @@ export default function handleOnMessage(state, { command, payload }, now = () =>
             };
         case "pause":
             if (!state.running) return state;
-            const elapsedMs = now() - state.startMs;
             return {
                 ...state,
                 running: false,
-                remainingMs: state.remainingMs - elapsedMs,
+                durationMs: state.remainingMs,
             };
         default:
             return state;

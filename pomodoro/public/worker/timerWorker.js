@@ -3,7 +3,8 @@ import handleOnMessage from "/utils/handleOnMessage.js";
 import handleSideEffects from "/utils/handleSideEffects.js";
 
 let state = createInitialState();
-/*
+/*  
+    durationMs : 설정 시간
     remainingMs : 남은 시간
     startMs : 시작 시간
     tickMs : 한 주기 시간
@@ -31,15 +32,15 @@ self.onmessage = on;
 
 // 타이머 진행 루프
 function timerLoop() {
+    if (!state.running) return;
     const { elapsedMs, remainingMs } = computeProgress(state);
     state = { ...state, remainingMs };
-    post("update", { remainingMs });
-
     if (remainingMs <= 0) {
         state = handleSideEffects("done", state);
         post("done");
         return;
     }
+    post("update", { remainingMs });
 
     // 드리프트 보정
     const nextTick = state.tickMs - (elapsedMs % state.tickMs);

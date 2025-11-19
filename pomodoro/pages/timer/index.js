@@ -17,39 +17,44 @@ export default function TimerPage() {
 
     const [remainingSec, setRemainingSec] = useState(0);
 
-    const timerRef = useRef(null);
+    const [timerInstance, setTimerInstance] = useState(null);
     const timerWorkerUrl = "/worker/timerWorker.js";
 
     useEffect(() => {
-        timerRef.current = new Timer(timerWorkerUrl);
-        const offTick = timerRef.current?.onTick((remainingMs) => {
+        const timer = new Timer(timerWorkerUrl);
+
+        const offTick = timer.onTick((remainingMs) => {
             setRemainingSec(changeMicroToSecond(remainingMs));
         });
+
+        setTimerInstance(timer);
+
         return () => {
             offTick();
-            timerRef.current.dispose();
+            timer?.dispose();
+            setTimerInstance(null);
         };
     }, [timerWorkerUrl]);
 
     useEffect(() => {
+        if (!timerInstance) return;
+
         const duration = getDurationByMode();
+
         setRemainingSec(duration);
-        timerRef.current?.setup(duration);
-    }, [mode, focusDuration, restDuration]);
+
+        timerInstance.pause();
+        timerInstance.setup(duration);
+    }, [timerInstance, mode, focusDuration, restDuration]);
 
     const getDurationByMode = () => {
         return mode === "focus" ? focusDuration : restDuration;
     };
 
-    const onClickStart = () => {
-        timerRef.current?.start();
-    };
-    const onClickPause = () => {
-        timerRef.current?.pause();
-    };
-    const onClickReset = () => {
-        timerRef.current?.reset();
-    };
+    const onClickStart = () => timerInstance?.start();
+    const onClickPause = () => timerInstance?.pause();
+    const onClickReset = () => timerInstance?.reset();
+
     const onClickModeChange = () => {
         setMode(mode === "focus" ? "rest" : "focus");
     };

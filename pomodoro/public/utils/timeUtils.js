@@ -1,5 +1,6 @@
 export function createInitialState() {
     return {
+        durationMs: 0,
         remainingMs: 0,
         startMs: 0,
         tickMs: 1000,
@@ -7,9 +8,9 @@ export function createInitialState() {
     };
 }
 
-export default function computeProgress(state, now = () => performance.now()) {
+export function computeProgress(state, now = () => performance.now()) {
     const elapsedMs = now() - state.startMs;
-    const remainingMs = state.remainingMs - elapsedMs;
+    const remainingMs = state.durationMs - elapsedMs;
     return { elapsedMs, remainingMs };
 }
 
