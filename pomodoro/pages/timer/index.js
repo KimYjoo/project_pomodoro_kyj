@@ -12,7 +12,7 @@ const TIMER_MODE_CONFIG = {
 export default function TimerPage() {
     const [mode, setMode] = useState("focus");
 
-    const [focusDuration, setFocusDuration] = useState(3000);
+    const [focusDuration, setFocusDuration] = useState(10);
     const [restDuration, setRestDuration] = useState(600);
 
     const [remainingSec, setRemainingSec] = useState(0);
@@ -27,10 +27,15 @@ export default function TimerPage() {
             setRemainingSec(changeMicroToSecond(remainingMs));
         });
 
+        const offDone = timer.onDone(() => {
+            changeModeTrigger();
+        });
+
         setTimerInstance(timer);
 
         return () => {
             offTick();
+            offDone();
             timer?.dispose();
             setTimerInstance(null);
         };
@@ -56,11 +61,16 @@ export default function TimerPage() {
     const onClickReset = () => timerInstance?.reset();
 
     const onClickModeChange = () => {
+        changeModeTrigger();
+    };
+
+    const changeModeTrigger = () => {
         setMode(mode === "focus" ? "rest" : "focus");
     };
 
     return (
         <>
+            <div>{TIMER_MODE_CONFIG[mode]}</div>
             <div>{timeFormatMMSS(remainingSec)}</div>
             <button onClick={onClickStart}>시작</button>
             <button onClick={onClickPause}>정지</button>
