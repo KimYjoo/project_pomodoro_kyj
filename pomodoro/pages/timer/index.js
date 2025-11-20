@@ -11,7 +11,7 @@ const TIMER_MODE_CONFIG = {
 
 export default function TimerPage() {
     const [mode, setMode] = useState("focus");
-
+    const [duration, setDuration] = useState(10);
     const [focusDuration, setFocusDuration] = useState(10);
     const [restDuration, setRestDuration] = useState(600);
 
@@ -55,6 +55,9 @@ export default function TimerPage() {
     const getDurationByMode = () => {
         return mode === "focus" ? focusDuration : restDuration;
     };
+    const getSettingDurationByMode = () => {
+        return mode === "focus" ? setFocusDuration : setRestDuration;
+    };
 
     const onClickStart = () => timerInstance?.start();
     const onClickPause = () => timerInstance?.pause();
@@ -68,6 +71,14 @@ export default function TimerPage() {
         setMode(mode === "focus" ? "rest" : "focus");
     };
 
+    const onChangeDuration = (event) => {
+        setDuration(event.target.value);
+    };
+    const onClickSubmitDuration = () => {
+        const setCurrModeDuration = getSettingDurationByMode();
+        setCurrModeDuration(duration);
+    };
+
     return (
         <>
             <div>{TIMER_MODE_CONFIG[mode]}</div>
@@ -76,6 +87,11 @@ export default function TimerPage() {
             <button onClick={onClickPause}>정지</button>
             <button onClick={onClickReset}>초기화</button>
             <button onClick={onClickModeChange}>모드변경</button>
+            <div>
+                <div>모드 시간 설정</div>
+                <input type="text" onChange={onChangeDuration} placeholder="시간을 입력해주세요." />
+            </div>
+            <button onClick={onClickSubmitDuration}>적용</button>
         </>
     );
 }
