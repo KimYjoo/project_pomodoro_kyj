@@ -33,13 +33,16 @@ self.onmessage = on;
 // 타이머 진행 루프
 function timerLoop() {
     if (!state.running) return;
+
     const { elapsedMs, remainingMs } = computeProgress(state);
     state = { ...state, remainingMs };
+
     if (remainingMs <= 0) {
         state = handleSideEffects("done", state);
         post("done");
         return;
     }
+
     post("update", { remainingMs });
 
     // 드리프트 보정

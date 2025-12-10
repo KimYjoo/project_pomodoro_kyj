@@ -1,29 +1,31 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { changeMicroToSecond, timeFormatMMSS } from "@/utils/timeUtils.js";
 import Timer from "@/domain/Timer";
 
 const TIMER_MODE_CONFIG = {
     rest: "rest",
     focus: "focus",
-};
+} as const;
+
+type TimerModeKey = keyof typeof TIMER_MODE_CONFIG;
 
 export default function TimerPage() {
-    const [mode, setMode] = useState("focus");
+    const [mode, setMode] = useState<TimerModeKey>("focus");
     const [duration, setDuration] = useState(10);
     const [focusDuration, setFocusDuration] = useState(10);
     const [restDuration, setRestDuration] = useState(600);
 
     const [remainingSec, setRemainingSec] = useState(0);
 
-    const [timerInstance, setTimerInstance] = useState(null);
+    const [timerInstance, setTimerInstance] = useState<Timer | null>(null);
     const timerWorkerUrl = "/worker/timerWorker.js";
 
     useEffect(() => {
         const timer = new Timer(timerWorkerUrl);
 
-        const offTick = timer.onTick((remainingMs) => {
+        const offTick = timer.onTick((remainingMs: number) => {
             setRemainingSec(changeMicroToSecond(remainingMs));
         });
 
@@ -52,11 +54,11 @@ export default function TimerPage() {
         timerInstance.setup(duration);
     }, [timerInstance, mode, focusDuration, restDuration]);
 
-    const getDurationByMode = () => {
-        return mode === "focus" ? focusDuration : restDuration;
+    const getDurationByMode = (): number => {
+        return mode === TIMER_MODE_CONFIG.focus ? focusDuration : restDuration;
     };
     const getSettingDurationByMode = () => {
-        return mode === "focus" ? setFocusDuration : setRestDuration;
+        return mode === TIMER_MODE_CONFIG.focus ? setFocusDuration : setRestDuration;
     };
 
     const onClickStart = () => timerInstance?.start();
@@ -68,12 +70,15 @@ export default function TimerPage() {
     };
 
     const changeModeTrigger = () => {
-        setMode(mode === "focus" ? "rest" : "focus");
+        setMode((prevMode) => (prevMode === TIMER_MODE_CONFIG.focus ? TIMER_MODE_CONFIG.rest : TIMER_MODE_CONFIG.focus));
     };
 
-    const onChangeDuration = (event) => {
-        setDuration(event.target.value);
+    const onChangeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const duration = Number(event.target.value);
+        if (!isFinite(duration)) return;
+        setDuration(Number(event.target.value));
     };
+
     const onClickSubmitDuration = () => {
         const setCurrModeDuration = getSettingDurationByMode();
         setCurrModeDuration(duration);
