@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { changeMicroToSecond, timeFormatMMSS } from "@/utils/timeUtils.js";
 import Timer from "@/features/timer/Timer";
 import GlobalStyles from "@/shared/styles/globalStyles";
+import BackgroundLayout from "@/features/timer/ui/backgroundLayout/BackgroundLayout.container";
 
 const TIMER_MODE_CONFIG = {
     rest: "rest",
@@ -88,6 +89,7 @@ export default function TimerPage() {
     return (
         <>
             <GlobalStyles />
+            <BackgroundLayout></BackgroundLayout>
             <div>{TIMER_MODE_CONFIG[mode]}</div>
             <div>{timeFormatMMSS(remainingSec)}</div>
             <button onClick={onClickStart}>시작</button>
