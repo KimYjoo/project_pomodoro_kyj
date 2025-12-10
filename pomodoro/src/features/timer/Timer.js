@@ -1,4 +1,4 @@
-import { changeSecondToMicro } from "@/utils/timeUtils";
+import { changeSecondToMicro } from "@/utils/timeUtils.js";
 
 export default class Timer {
     #durationMs = 0;

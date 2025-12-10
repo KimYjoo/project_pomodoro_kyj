@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { changeMicroToSecond, timeFormatMMSS } from "@/utils/timeUtils.js";
-import Timer from "@/features/timer/Timer";
+import Timer from "@/features/timer/Timer.js";
 import GlobalStyles from "@/shared/styles/globalStyles";
 import BackgroundLayout from "@/features/timer/ui/backgroundLayout/BackgroundLayout.container";
 
