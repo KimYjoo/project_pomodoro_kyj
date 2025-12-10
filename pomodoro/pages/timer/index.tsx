@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { changeMicroToSecond, timeFormatMMSS } from "@/utils/timeUtils.js";
-import Timer from "@/domain/Timer";
+import Timer from "@/features/timer/Timer";
 
 const TIMER_MODE_CONFIG = {
     rest: "rest",

@@ -1,4 +1,4 @@
-import Timer from "@/domain/Timer";
+import Timer from "@/features/timer/Timer";
 
 describe("Timer start", () => {
     let mockWorker;
