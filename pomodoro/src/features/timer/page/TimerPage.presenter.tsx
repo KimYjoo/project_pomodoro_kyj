@@ -1,9 +1,18 @@
 import BackgroundLayout from "../ui/backgroundLayout/BackgroundLayout.container";
+import Timer from "../ui/timer/Timer.container";
+import * as S from "./TimerPage.style";
 
-export default function TimerPage() {
+interface ITimerPageUIProps {
+    mode: string;
+    rawTimeData: number;
+}
+
+export default function TimerPageUI(props: ITimerPageUIProps) {
     return (
-        <>
-            <BackgroundLayout></BackgroundLayout>
-        </>
+        <BackgroundLayout>
+            <S.MainContent>
+                <Timer mode={props.mode} rawTimeData={props.rawTimeData} />
+            </S.MainContent>
+        </BackgroundLayout>
     );
 }

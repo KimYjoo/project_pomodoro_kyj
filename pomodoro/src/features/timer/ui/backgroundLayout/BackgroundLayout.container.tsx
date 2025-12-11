@@ -1,8 +1,9 @@
 import BackgroundLayoutUI from "./BackgroundLayout.presenter";
-export default function BackgroundLayout() {
-    return (
-        <>
-            <BackgroundLayoutUI />
-        </>
-    );
+
+interface IBackgroundLayoutProps {
+    children: JSX.Element;
+}
+
+export default function BackgroundLayout(props: IBackgroundLayoutProps) {
+    return <BackgroundLayoutUI children={props.children} />;
 }
