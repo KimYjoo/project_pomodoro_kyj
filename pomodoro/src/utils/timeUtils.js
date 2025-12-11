@@ -1,4 +1,4 @@
-export { changeSecondToMicro, changeMicroToSecond, timeFormatMMSS };
+export { changeSecondToMicro, changeMicroToSecond, timeFormatMMSS, convertMsToTime };
 
 function changeSecondToMicro(second) {
     return second * 1000;
