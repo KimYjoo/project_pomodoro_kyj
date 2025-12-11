@@ -16,8 +16,8 @@ function timeFormatMMSS(time) {
 
 function convertMsToTime(time) {
     const second = String(time % 60).padStart(2, "0");
-    const minute = String(time / 60).padStart(2, "0");
-    const hour = String(minute / 60).padStart(2, "0");
+    const minute = String(Math.floor(time / 60)).padStart(2, "0");
+    const hour = String(Math.floor(minute / 60)).padStart(2, "0");
 
     return {
         hour,
