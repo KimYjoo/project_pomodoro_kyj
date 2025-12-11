@@ -1,5 +1,5 @@
-import TimerRow from "../row/TimerRow.container";
-import * as S from "./TimerLayout.style";
+import TimerRow from "./row/TimeRow.container";
+import * as S from "./TimeDisplay.style";
 
 interface ITimerLayoutUIProps {
     hour: string;
@@ -7,7 +7,7 @@ interface ITimerLayoutUIProps {
     second: string;
 }
 
-export default function TimerLayoutUI(props: ITimerLayoutUIProps) {
+export default function TimeDisplayUI(props: ITimerLayoutUIProps) {
     return (
         <S.Container>
             <TimerRow rowTitle="hour" rowTime={props.hour}></TimerRow>

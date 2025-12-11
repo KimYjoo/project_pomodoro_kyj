@@ -1,4 +1,4 @@
-import * as S from "./TimerRow.style";
+import * as S from "./TimeRow.style";
 
 interface ITimerRowUIProps {
     rowTitle: string;

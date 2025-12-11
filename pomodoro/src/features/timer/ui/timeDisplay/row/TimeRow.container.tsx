@@ -1,4 +1,4 @@
-import TimerRowUI from "./TimerRow.presenter";
+import TimerRowUI from "./TimeRow.presenter";
 
 interface ITimerRowProps {
     rowTitle: string;
