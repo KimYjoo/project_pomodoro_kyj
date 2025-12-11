@@ -1,15 +1,16 @@
 import TimerLayoutUI from "./TimerLayout.presenter";
+import { convertMsToTime } from "@/utils/timeUtils.js";
 
 interface ITimerLayout {
     rawTimeData: number;
-    mode: string;
 }
 
 export default function TimerLayout(props: ITimerLayout) {
-    const {Hour, Minute, Second} = 
+    const { hour, minute, second } = convertMsToTime(props.rawTimeData);
+
     return (
         <>
-            <TimerLayoutUI />
+            <TimerLayoutUI hour={hour} minute={minute} second={second} />
         </>
     );
 }

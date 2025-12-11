@@ -10,11 +10,8 @@ export const RowTime = styled.div`
 `;
 
 export const Container = styled.div`
-    width: fit-content;
+    width: 100%;
     display: flex;
     flex-direction: row;
-    gap: 41px;
-    font-family: "Junge", cursive;
-    font-weight: 400;
-    font-style: normal;
+    justify-content: space-between;
 `;

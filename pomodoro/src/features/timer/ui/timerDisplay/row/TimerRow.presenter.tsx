@@ -1,4 +1,4 @@
-import * as style from "./TimerRow.style";
+import * as S from "./TimerRow.style";
 
 interface ITimerRowUIProps {
     rowTitle: string;
@@ -7,9 +7,9 @@ interface ITimerRowUIProps {
 
 export default function TimerRowUI(props: ITimerRowUIProps) {
     return (
-        <style.Container>
-            <style.RowTitle>{props.rowTitle}</style.RowTitle>
-            <style.RowTime>{props.rowTime}</style.RowTime>
-        </style.Container>
+        <S.Container>
+            <S.RowTitle>{props.rowTitle}</S.RowTitle>
+            <S.RowTime>{props.rowTime}</S.RowTime>
+        </S.Container>
     );
 }
