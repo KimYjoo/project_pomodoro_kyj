@@ -13,3 +13,15 @@ function timeFormatMMSS(time) {
     const ss = String(time % 60).padStart(2, "0");
     return `${mm}:${ss}`;
 }
+
+function convertMsToTime(time) {
+    const second = String(time % 60).padStart(2, "0");
+    const minute = String(time / 60).padStart(2, "0");
+    const hour = String(minute / 60).padStart(2, "0");
+
+    return {
+        hour,
+        minute,
+        second,
+    };
+}
