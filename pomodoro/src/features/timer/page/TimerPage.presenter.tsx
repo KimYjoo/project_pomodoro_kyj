@@ -5,6 +5,8 @@ import * as S from "./TimerPage.style";
 interface ITimerPageUIProps {
     mode: string;
     rawTimeData: number;
+    onClickStart: () => void;
+    onClickPause: () => void;
 }
 
 export default function TimerPageUI(props: ITimerPageUIProps) {
